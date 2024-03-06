@@ -11,7 +11,7 @@ namespace OOP_test
     {
         public class info
         {
-            public string Title { get; set; }
+            public string Title { get; set; } // die infos über den Filme bekommen
             public int Year { get; set; }
             public string Genre { get; set; }
             
