@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,11 +20,10 @@ namespace OOP_test
 {
     public partial class Form1 : Form
     {
-    
+
         public string ApiKey = "a514f1cf"; //api key
         Random rnd = new Random(); //random zahl
         List<string> list = new List<string>(); //Liste erstellen
-
         public Form1()
         {
             InitializeComponent();
@@ -38,10 +37,11 @@ namespace OOP_test
         private void button1_Click(object sender, EventArgs e)
         {
             //Aufruf der Funktionen
-            abfrage(); 
+            bool i = false;
+            abfrage(i);
             comboboxsearch();
         }
-        
+
 
         void comboboxsearch()
         {
@@ -49,24 +49,24 @@ namespace OOP_test
             int i;
             string link, json;
             Movie.info Info;
-           
-            
+
+
             // Ein WebClient-Objekt wird erstellt, um eine HTTP-Anfrage zu senden.
             using (WebClient Web = new WebClient())
             {
-            // Schleife wird gestartet, die so lange läuft, bis ein gültiger Filmtitel gefunden wird.
+                // Schleife wird gestartet, die so lange läuft, bis ein gültiger Filmtitel gefunden wird.
                 do
                 {
                     i = rnd.Next(0083658, 9900000);
                     link = "https://www.omdbapi.com/?i=tt+" + i + "&apikey=" + ApiKey;
-                     // Die JSON-Antwort von der OMDB-API wird heruntergeladen.
+                    // Die JSON-Antwort von der OMDB-API wird heruntergeladen.
                     json = Web.DownloadString(link);
-                     // Die JSON-Antwort wird in ein 'Movie.info'-Objekt deserialisiert.
+                    // Die JSON-Antwort wird in ein 'Movie.info'-Objekt deserialisiert.
                     Info = JsonConvert.DeserializeObject<Movie.info>(json);
                 }
-                  // Die Schleife wird fortgesetzt, bis ein Film mit einem nicht-leeren Titel gefunden wird.
+                // Die Schleife wird fortgesetzt, bis ein Film mit einem nicht-leeren Titel gefunden wird.
                 while (string.IsNullOrEmpty(Info.Title));
-                 // Wenn der Filmtitel nicht null ist, wird er zur ComboBox und zur Liste hinzugefügt.
+                // Wenn der Filmtitel nicht null ist, wird er zur ComboBox und zur Liste hinzugefügt.
                 if (Info.Title != null)
                 {
                     comboBox1.Items.Add(Info.Title);
@@ -79,39 +79,14 @@ namespace OOP_test
 
         private void button2_Click(object sender, EventArgs e)
         {
-            // deklarien 
-            int i;
-            string link, json;
-            Movie.info Info;
-            textBox2.Clear();
-
-            if (list.Contains(comboBox1.Text)) 
-            {
-                using (var webClient = new WebClient())
-                {
-                    i = rnd.Next(0083658, 9900000); // random Film Nummer ca zwischen 0 bis 9900000
-                    link = "https://www.omdbapi.com/?i=tt+" + i + "&apikey=" + ApiKey;
-                    json = webClient.DownloadString(link);
-                    Info = JsonConvert.DeserializeObject<Movie.info>(json);
-                    textBox2.Text = "Titel: " + Info.Title + Environment.NewLine + "Year: " + Info.Year + Environment.NewLine + "Genre: " + Info.Genre + Environment.NewLine + "Awards: " + Info.Awards;
-                    /*using (var web = new WebClient()) // gab fehler deshalb aus kommentiert 
-                    {
-                        
-                        byte[] imageBytes = web.DownloadData(Info.Poster);
-
-                        using (var ms = new MemoryStream(imageBytes))
-                        {
-                            pictureBox1.Image = Image.FromStream(ms);
-                        }
-                    }*/
-                }
-            }
-
+            bool b = true;
+            abfrage(b);
+           
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-        // auswahl so erstellen das nur die die angezeigt werden sollen angezeigt werden
+            // auswahl so erstellen das nur die die angezeigt werden sollen angezeigt werden
             if (comboBox2.SelectedIndex == 0)
             {
                 label1.Visible = false;
@@ -119,10 +94,10 @@ namespace OOP_test
                 button2.Visible = false;
                 label2.Visible = true;
                 button1.Visible = true;
-                textBox1 .Visible = true;
+                textBox1.Visible = true;
 
             }
-            else if (comboBox2.SelectedIndex == 1) 
+            else if (comboBox2.SelectedIndex == 1)
             {
                 label1.Visible = true;
                 comboBox1.Visible = true;
@@ -136,23 +111,36 @@ namespace OOP_test
 
 
         }
-        void abfrage()
+        void abfrage(bool check)
         {
-                        // Zuerst wird der Inhalt von textBox2 gelöscht.
+            // Zuerst wird der Inhalt von textBox2 gelöscht.
             textBox2.Clear();
-            
+
             // Ein WebClient-Objekt wird erstellt, um eine HTTP-Anfrage zu senden.
             using (WebClient Web = new WebClient())
             {
-                // Der Link zur OMDB-API wird erstellt. Der Filmtitel aus textBox1 wird verwendet und Leerzeichen werden durch '+' ersetzt.
-                string link = "https://www.omdbapi.com/?t=" + textBox1.Text.Replace(' ', '+') + "&apikey=" + ApiKey;
-            
+                int i;
+                string link = "";
+                if(check == false)
+                {
+                    // Der Link zur OMDB-API wird erstellt. Der Filmtitel aus textBox1 wird verwendet und Leerzeichen werden durch '+' ersetzt.
+                   link = "https://www.omdbapi.com/?t=" + textBox1.Text.Replace(' ', '+') + "&apikey=" + ApiKey;
+                }
+               else if(check == true)
+               {
+                    if (list.Contains(comboBox1.Text))
+                    {
+                        i = rnd.Next(0083658, 9900000); // random Film Nummer ca zwischen 0 bis 9900000
+                        link = "https://www.omdbapi.com/?i=tt+" + i + "&apikey=" + ApiKey;
+                    }
+               }
+
                 // Die JSON-Antwort von der OMDB-API wird heruntergeladen.
                 var json = Web.DownloadString(link);
-            
+
                 // Die JSON-Antwort wird in ein Movie.info-Objekt deserialisiert.
                 Movie.info Info = JsonConvert.DeserializeObject<Movie.info>(json);
-            
+
                 // Abhängig von den ausgewählten Checkboxen werden verschiedene Informationen zum Film in textBox2 eingefügt.
                 if (titel.Checked)
                 {
@@ -164,11 +152,11 @@ namespace OOP_test
                 }
                 if (genre.Checked)
                 {
-                    textBox2.Text+= "Genre: " + Info.Genre + Environment.NewLine;
+                    textBox2.Text += "Genre: " + Info.Genre + Environment.NewLine;
                 }
                 if (awards.Checked)
                 {
-                    textBox2.Text+= "Award: " + Info.Awards + Environment.NewLine;
+                    textBox2.Text += "Award: " + Info.Awards + Environment.NewLine;
                 }
                 if (country.Checked)
                 {
@@ -178,19 +166,28 @@ namespace OOP_test
                 {
                     textBox2.Text += "Plot: " + Info.Plot + Environment.NewLine;
                 }
-            
-                // Ein weiteres WebClient-Objekt wird erstellt, um das Filmposter herunterzuladen.
-                using (var webClient = new WebClient())
+
+                if(check == false)
                 {
-                    // Das Filmposter wird als Byte-Array heruntergeladen.
-                    byte[] imageBytes = webClient.DownloadData(Info.Poster);
-            
-                    // Das Byte-Array wird in ein MemoryStream-Objekt umgewandelt und dann in ein Image-Objekt konvertiert, das in pictureBox1 angezeigt wird.
-                    using (var ms = new MemoryStream(imageBytes))
+                    // Ein weiteres WebClient-Objekt wird erstellt, um das Filmposter herunterzuladen.
+                    using (var webClient = new WebClient())
                     {
-                        pictureBox1.Image = Image.FromStream(ms);
+                        // Das Filmposter wird als Byte-Array heruntergeladen.
+                        byte[] imageBytes = webClient.DownloadData(Info.Poster);
+
+                        // Das Byte-Array wird in ein MemoryStream-Objekt umgewandelt und dann in ein Image-Objekt konvertiert, das in pictureBox1 angezeigt wird.
+                        using (var ms = new MemoryStream(imageBytes))
+                        {
+                            pictureBox1.Image = Image.FromStream(ms);
+                        }
                     }
                 }
+                else
+                {
+                    pictureBox1.Image = null;
+                }
+                
+               
             }
 
 
