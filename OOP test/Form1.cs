@@ -21,7 +21,7 @@ namespace OOP_test
     public partial class Form1 : Form
     {
 
-        public string ApiKey = "a514f1cf"; //api key
+        public string ApiKey = "Your-APIkey"; //Your api key
         Random rnd = new Random(); //random zahl
         List<string> list = new List<string>(); //Liste erstellen
         public Form1()
@@ -57,7 +57,7 @@ namespace OOP_test
                 // Schleife wird gestartet, die so lange läuft, bis ein gültiger Filmtitel gefunden wird.
                 do
                 {
-                    i = rnd.Next(0083658, 9900000);
+                    i = rnd.Next(0000000, 9900000);
                     link = "https://www.omdbapi.com/?i=tt+" + i + "&apikey=" + ApiKey;
                     // Die JSON-Antwort von der OMDB-API wird heruntergeladen.
                     json = Web.DownloadString(link);
@@ -113,14 +113,15 @@ namespace OOP_test
         }
         void abfrage(bool check)
         {
+            int i;
+            string link = "";
             // Zuerst wird der Inhalt von textBox2 gelöscht.
             textBox2.Clear();
 
             // Ein WebClient-Objekt wird erstellt, um eine HTTP-Anfrage zu senden.
             using (WebClient Web = new WebClient())
             {
-                int i;
-                string link = "";
+                
                 if(check == false)
                 {
                     // Der Link zur OMDB-API wird erstellt. Der Filmtitel aus textBox1 wird verwendet und Leerzeichen werden durch '+' ersetzt.
